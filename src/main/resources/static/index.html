@@ -46,24 +46,45 @@
                 <span class="nav__logo">◆</span>
                 <span class="nav__title">AETHER</span>
             </div>
-            <div class="nav__links">
-                <button class="nav__link nav__link--active" data-page="dashboard" id="nav-dashboard">
-                    <span class="nav__link-icon">⬡</span> DASHBOARD
-                </button>
-                <button class="nav__link" data-page="journal" id="nav-journal">
-                    <span class="nav__link-icon">◇</span> JOURNAL
-                </button>
-                <button class="nav__link" data-page="insights" id="nav-insights">
-                    <span class="nav__link-icon">△</span> INSIGHTS
-                </button>
-            </div>
-            <div class="nav__right">
-                <button class="btn btn--ghost btn--sm" id="btn-guide" title="Show walkthrough">? GUIDE</button>
-                <div class="nav__user" id="nav-user" style="display:none;">
-                    <img class="nav__avatar" id="user-avatar" src="" alt="User" width="28" height="28">
-                    <button class="btn btn--ghost btn--sm" id="btn-signout">SIGN OUT</button>
+            <div class="nav__center">
+                <div class="nav__tabs">
+                    <button class="nav__tab nav__tab--active" data-page="dashboard" id="nav-dashboard">
+                        <span class="nav__tab-icon">⬡</span>
+                        <span class="nav__tab-label">DASHBOARD</span>
+                    </button>
+                    <button class="nav__tab" data-page="journal" id="nav-journal">
+                        <span class="nav__tab-icon">◇</span>
+                        <span class="nav__tab-label">JOURNAL</span>
+                    </button>
+                    <button class="nav__tab" data-page="insights" id="nav-insights">
+                        <span class="nav__tab-icon">△</span>
+                        <span class="nav__tab-label">INSIGHTS</span>
+                    </button>
+                    <div class="nav__tab-indicator"></div>
                 </div>
-                <div class="nav__date" id="current-date"></div>
+            </div>
+            <div class="nav__actions">
+                <span class="nav__date" id="current-date"></span>
+                <div class="nav__divider"></div>
+                <button class="nav__icon-btn" id="btn-guide" title="Show walkthrough">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                        <line x1="12" y1="17" x2="12.01" y2="17" />
+                    </svg>
+                </button>
+                <div class="nav__user-group" id="nav-user" style="display:none;">
+                    <img class="nav__avatar" id="user-avatar" src="" alt="User" width="28" height="28">
+                    <button class="nav__icon-btn nav__icon-btn--signout" id="btn-signout" title="Sign out">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                            <polyline points="16 17 21 12 16 7" />
+                            <line x1="21" y1="12" x2="9" y2="12" />
+                        </svg>
+                    </button>
+                </div>
             </div>
         </nav>
 

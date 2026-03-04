@@ -53,14 +53,14 @@ document.addEventListener('auth-ready', () => {
 // ═══════════════════════════════════════════════════════════
 
 function initNavigation() {
-    document.querySelectorAll('.nav__link').forEach(link => {
-        link.addEventListener('click', () => switchPage(link.dataset.page));
+    document.querySelectorAll('.nav__tab').forEach(tab => {
+        tab.addEventListener('click', () => switchPage(tab.dataset.page));
     });
 }
 
 function switchPage(page) {
-    document.querySelectorAll('.nav__link').forEach(l => l.classList.remove('nav__link--active'));
-    document.querySelector(`[data-page="${page}"]`).classList.add('nav__link--active');
+    document.querySelectorAll('.nav__tab').forEach(t => t.classList.remove('nav__tab--active'));
+    document.querySelector(`[data-page="${page}"]`).classList.add('nav__tab--active');
 
     document.querySelectorAll('.page').forEach(p => p.classList.remove('page--active'));
     const pageEl = document.getElementById(`page-${page}`);

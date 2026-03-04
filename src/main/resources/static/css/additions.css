@@ -1,34 +1,7 @@
 /* ═══════════════════════════════════════════════════════════
    AETHER — Additional Styles
-   Auth, Walkthrough, Edit Modal, Guide Button
+   Auth, Walkthrough, Edit Modal
    ═══════════════════════════════════════════════════════════ */
-
-/* ── Nav Right ───────────────────────────────────────────── */
-.nav__right {
-    display: flex;
-    align-items: center;
-    gap: var(--space-sm);
-}
-
-.nav__user {
-    display: flex;
-    align-items: center;
-    gap: var(--space-sm);
-}
-
-.nav__avatar {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    border: 1px solid var(--border-default);
-    object-fit: cover;
-}
-
-.btn--sm {
-    font-size: 0.65rem;
-    padding: 5px 10px;
-    letter-spacing: 0.1em;
-}
 
 /* ── Firebase Auth Overlay ───────────────────────────────── */
 .auth-overlay {
