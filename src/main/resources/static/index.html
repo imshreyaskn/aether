@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AETHER - A minimal habit tracker and journal for clarity through consistency.">
+    <title>AETHER — Habit Tracker & Journal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/additions.css">
+</head>
+
+<body>
+
+    <!-- ░░ Firebase Auth Overlay (shown before login) ░░ -->
+    <div class="auth-overlay" id="auth-overlay" style="display:none;">
+        <div class="auth-card">
+            <div class="auth-logo">
+                <span class="auth-logo__icon">◆</span>
+                <span class="auth-logo__title">AETHER</span>
+            </div>
+            <p class="auth-tagline">Clarity through consistency.</p>
+            <button class="btn btn--primary btn--google" id="btn-google-signin">
+                <svg width="18" height="18" viewBox="0 0 48 48" style="flex-shrink:0">
+                    <path fill="#FFF"
+                        d="M44.5 20H24v8.5h11.8C34.7 33.9 29.1 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0 5.9 1.1 8.1 2.9l6.4-6.4C34.6 4.1 29.6 2 24 2 11.8 2 2 11.8 2 24s9.8 22 22 22c11 0 21-8 21-22 0-1.3-.2-2.7-.5-4z" />
+                </svg>
+                CONTINUE WITH GOOGLE
+            </button>
+            <p class="auth-note">Your data is private to your account.</p>
+        </div>
+    </div>
+
+    <!-- ░░ App Shell (shown after login) ░░ -->
+    <div id="app-shell" style="display:none;">
+
+        <!-- Navigation -->
+        <nav class="nav" id="main-nav">
+            <div class="nav__brand">
+                <span class="nav__logo">◆</span>
+                <span class="nav__title">AETHER</span>
+            </div>
+            <div class="nav__links">
+                <button class="nav__link nav__link--active" data-page="dashboard" id="nav-dashboard">
+                    <span class="nav__link-icon">⬡</span> DASHBOARD
+                </button>
+                <button class="nav__link" data-page="journal" id="nav-journal">
+                    <span class="nav__link-icon">◇</span> JOURNAL
+                </button>
+                <button class="nav__link" data-page="insights" id="nav-insights">
+                    <span class="nav__link-icon">△</span> INSIGHTS
+                </button>
+            </div>
+            <div class="nav__right">
+                <button class="btn btn--ghost btn--sm" id="btn-guide" title="Show walkthrough">? GUIDE</button>
+                <div class="nav__user" id="nav-user" style="display:none;">
+                    <img class="nav__avatar" id="user-avatar" src="" alt="User" width="28" height="28">
+                    <button class="btn btn--ghost btn--sm" id="btn-signout">SIGN OUT</button>
+                </div>
+                <div class="nav__date" id="current-date"></div>
+            </div>
+        </nav>
+
+        <!-- Dashboard Page -->
+        <main class="page page--active" id="page-dashboard">
+            <div class="dashboard">
+                <div class="stats-bar" id="stats-bar">
+                    <div class="stat-card" id="stat-streak">
+                        <div class="stat-card__value" id="streak-value">0</div>
+                        <div class="stat-card__label">DAY STREAK</div>
+                    </div>
+                    <div class="stat-card" id="stat-today">
+                        <div class="stat-card__value" id="today-progress">0%</div>
+                        <div class="stat-card__label">TODAY</div>
+                    </div>
+                    <div class="stat-card" id="stat-weekly">
+                        <div class="stat-card__value" id="weekly-avg">0%</div>
+                        <div class="stat-card__label">7-DAY AVG</div>
+                    </div>
+                </div>
+
+                <section class="section" id="habits-section">
+                    <div class="section__header">
+                        <h1 class="section__title">DAILY PROTOCOL</h1>
+                        <button class="btn btn--primary" id="btn-add-habit">
+                            <span>+</span> NEW HABIT
+                        </button>
+                    </div>
+                    <div class="habit-list" id="habit-list"></div>
+                    <div class="empty-state" id="habits-empty" style="display:none;">
+                        <span class="empty-state__icon">◇</span>
+                        <p>No habits defined yet.</p>
+                        <p class="text-muted">Create your first habit to begin tracking.</p>
+                    </div>
+                </section>
+
+                <section class="section" id="mini-chart-section">
+                    <h2 class="section__title">7-DAY OVERVIEW</h2>
+                    <div class="chart-container chart-container--mini">
+                        <canvas id="mini-chart"></canvas>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <!-- Journal Page -->
+        <main class="page" id="page-journal">
+            <div class="journal">
+                <section class="section">
+                    <div class="section__header">
+                        <h1 class="section__title">JOURNAL</h1>
+                        <div class="journal__date-nav">
+                            <button class="btn btn--ghost" id="btn-prev-day">←</button>
+                            <span class="journal__current-date" id="journal-date-label"></span>
+                            <button class="btn btn--ghost" id="btn-next-day">→</button>
+                        </div>
+                    </div>
+
+                    <div class="mood-selector" id="mood-selector">
+                        <span class="mood-selector__label">MOOD</span>
+                        <button class="mood-btn" data-mood="great" title="Great">▲▲</button>
+                        <button class="mood-btn" data-mood="good" title="Good">▲</button>
+                        <button class="mood-btn" data-mood="neutral" title="Neutral">◆</button>
+                        <button class="mood-btn" data-mood="bad" title="Bad">▼</button>
+                        <button class="mood-btn" data-mood="terrible" title="Terrible">▼▼</button>
+                    </div>
+
+                    <div class="journal__editor">
+                        <input type="text" class="journal__title-input" id="journal-title" placeholder="Entry title..."
+                            maxlength="100">
+                        <textarea class="journal__textarea" id="journal-content"
+                            placeholder="What happened today? What are you grateful for? What did you learn?"></textarea>
+                    </div>
+
+                    <div class="journal__actions">
+                        <button class="btn btn--primary" id="btn-save-journal">SAVE ENTRY</button>
+                        <span class="journal__status" id="journal-status"></span>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2 class="section__title">PAST ENTRIES</h2>
+                    <div class="journal-entries" id="journal-entries"></div>
+                    <div class="empty-state" id="journals-empty" style="display:none;">
+                        <span class="empty-state__icon">◇</span>
+                        <p>No journal entries yet.</p>
+                        <p class="text-muted">Write your first entry to begin reflecting.</p>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <!-- Insights Page -->
+        <main class="page" id="page-insights">
+            <div class="insights">
+                <section class="section">
+                    <div class="section__header">
+                        <h1 class="section__title">INSIGHTS</h1>
+                        <div class="insights__range-selector">
+                            <button class="btn btn--ghost range-btn range-btn--active" data-days="7"
+                                id="range-7">7D</button>
+                            <button class="btn btn--ghost range-btn" data-days="14" id="range-14">14D</button>
+                            <button class="btn btn--ghost range-btn" data-days="30" id="range-30">30D</button>
+                        </div>
+                    </div>
+                    <div class="chart-container" id="insights-chart-section">
+                        <canvas id="main-chart"></canvas>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2 class="section__title">HABIT BREAKDOWN</h2>
+                    <div class="habit-breakdown" id="habit-breakdown"></div>
+                </section>
+
+                <section class="section">
+                    <div class="insights-stats" id="insights-stats">
+                        <div class="insights-stat">
+                            <div class="insights-stat__label">BEST DAY</div>
+                            <div class="insights-stat__value" id="best-day">—</div>
+                        </div>
+                        <div class="insights-stat">
+                            <div class="insights-stat__label">WORST DAY</div>
+                            <div class="insights-stat__value" id="worst-day">—</div>
+                        </div>
+                        <div class="insights-stat">
+                            <div class="insights-stat__label">COMPLETION RATE</div>
+                            <div class="insights-stat__value" id="overall-rate">0%</div>
+                        </div>
+                        <div class="insights-stat">
+                            <div class="insights-stat__label">CURRENT STREAK</div>
+                            <div class="insights-stat__value" id="insights-streak">0</div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <!-- ░░ HABIT MODAL (Create + Edit) ░░ -->
+        <div class="modal-overlay" id="habit-modal" style="display:none;">
+            <div class="modal">
+                <div class="modal__header">
+                    <h2 class="modal__title" id="modal-title">NEW HABIT</h2>
+                    <button class="modal__close" id="modal-close">✕</button>
+                </div>
+                <div class="modal__body">
+                    <!-- hidden field to track edit mode -->
+                    <input type="hidden" id="modal-editing-id" value="">
+
+                    <div class="form-group">
+                        <label class="form-label" for="habit-name">NAME</label>
+                        <input type="text" class="form-input" id="habit-name" placeholder="e.g., Meditate"
+                            maxlength="50">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="habit-description">DESCRIPTION</label>
+                        <input type="text" class="form-input" id="habit-description"
+                            placeholder="e.g., 10 min morning session" maxlength="100">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">COLOR</label>
+                        <div class="color-picker" id="color-picker">
+                            <button class="color-swatch color-swatch--active" data-color="#8B5CF6"
+                                style="background:#8B5CF6"></button>
+                            <button class="color-swatch" data-color="#06B6D4" style="background:#06B6D4"></button>
+                            <button class="color-swatch" data-color="#10B981" style="background:#10B981"></button>
+                            <button class="color-swatch" data-color="#F59E0B" style="background:#F59E0B"></button>
+                            <button class="color-swatch" data-color="#EF4444" style="background:#EF4444"></button>
+                            <button class="color-swatch" data-color="#EC4899" style="background:#EC4899"></button>
+                            <button class="color-swatch" data-color="#6366F1" style="background:#6366F1"></button>
+                            <button class="color-swatch" data-color="#84CC16" style="background:#84CC16"></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal__footer">
+                    <button class="btn btn--ghost" id="modal-cancel">CANCEL</button>
+                    <button class="btn btn--primary" id="modal-save">CREATE HABIT</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ░░ WALKTHROUGH OVERLAY ░░ -->
+        <div class="walkthrough-overlay" id="walkthrough-overlay" style="display:none;" aria-modal="true" role="dialog">
+            <svg class="walkthrough-svg" id="walkthrough-svg" aria-hidden="true">
+                <defs>
+                    <mask id="spotlight-mask">
+                        <rect width="100%" height="100%" fill="white" />
+                        <rect id="spotlight-hole" rx="8" fill="black" />
+                    </mask>
+                </defs>
+                <rect width="100%" height="100%" fill="rgba(0,0,0,0.82)" mask="url(#spotlight-mask)" />
+            </svg>
+            <div class="walkthrough-tooltip" id="walkthrough-tooltip">
+                <div class="walkthrough-tooltip__step" id="wt-step"></div>
+                <h3 class="walkthrough-tooltip__title" id="wt-title"></h3>
+                <p class="walkthrough-tooltip__body" id="wt-body"></p>
+                <div class="walkthrough-tooltip__footer">
+                    <button class="btn btn--ghost btn--sm" id="wt-prev">← PREV</button>
+                    <div class="walkthrough-dots" id="wt-dots"></div>
+                    <button class="btn btn--primary btn--sm" id="wt-next">NEXT →</button>
+                </div>
+            </div>
+            <button class="walkthrough-skip" id="wt-skip">SKIP</button>
+        </div>
+
+        <!-- Toast -->
+        <div class="toast" id="toast" style="display:none;">
+            <span class="toast__message" id="toast-message"></span>
+        </div>
+
+    </div><!-- #app-shell -->
+
+    <script src="/js/auth.js"></script>
+    <script src="/js/walkthrough.js"></script>
+    <script src="/js/app.js"></script>
+</body>
+
+</html>

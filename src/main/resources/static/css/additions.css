@@ -1,0 +1,221 @@
+/* ═══════════════════════════════════════════════════════════
+   AETHER — Additional Styles
+   Auth, Walkthrough, Edit Modal, Guide Button
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Nav Right ───────────────────────────────────────────── */
+.nav__right {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.nav__user {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.nav__avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1px solid var(--border-default);
+    object-fit: cover;
+}
+
+.btn--sm {
+    font-size: 0.65rem;
+    padding: 5px 10px;
+    letter-spacing: 0.1em;
+}
+
+/* ── Firebase Auth Overlay ───────────────────────────────── */
+.auth-overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--bg-primary);
+    z-index: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.auth-card {
+    text-align: center;
+    padding: var(--space-2xl);
+    max-width: 360px;
+    width: 100%;
+}
+
+.auth-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-lg);
+}
+
+.auth-logo__icon {
+    font-size: 2rem;
+    color: var(--accent-violet);
+    animation: pulse-glow 3s ease-in-out infinite;
+}
+
+.auth-logo__title {
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: 0.4em;
+}
+
+.auth-tagline {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    letter-spacing: 0.15em;
+    margin-bottom: var(--space-2xl);
+}
+
+.btn--google {
+    width: 100%;
+    justify-content: center;
+    gap: var(--space-sm);
+    padding: var(--space-md) var(--space-lg);
+    font-size: 0.75rem;
+    margin-bottom: var(--space-md);
+}
+
+.auth-note {
+    font-size: 0.65rem;
+    color: var(--text-disabled);
+    letter-spacing: 0.05em;
+}
+
+/* ── Walkthrough Overlay ─────────────────────────────────── */
+.walkthrough-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 900;
+    pointer-events: all;
+}
+
+.walkthrough-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.walkthrough-tooltip {
+    position: absolute;
+    z-index: 910;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    width: 300px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+    animation: modal-in 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.walkthrough-tooltip__step {
+    font-size: 0.6rem;
+    color: var(--accent-violet);
+    letter-spacing: 0.2em;
+    margin-bottom: var(--space-xs);
+}
+
+.walkthrough-tooltip__title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--space-sm);
+    letter-spacing: 0.05em;
+}
+
+.walkthrough-tooltip__body {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: var(--space-lg);
+}
+
+.walkthrough-tooltip__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-sm);
+}
+
+.walkthrough-dots {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.walkthrough-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--border-default);
+    transition: background var(--transition-base);
+}
+
+.walkthrough-dot--active {
+    background: var(--accent-violet);
+    width: 18px;
+    border-radius: 3px;
+}
+
+.walkthrough-skip {
+    position: absolute;
+    top: var(--space-lg);
+    right: var(--space-lg);
+    background: none;
+    border: 1px solid var(--border-subtle);
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    padding: var(--space-xs) var(--space-sm);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.walkthrough-skip:hover {
+    color: var(--text-primary);
+    border-color: var(--border-default);
+}
+
+/* ── Habit Edit Button ───────────────────────────────────── */
+.habit-action-btn--edit {
+    color: var(--text-muted);
+}
+
+.habit-action-btn--edit:hover {
+    color: var(--accent-violet) !important;
+    background: var(--accent-violet-dim) !important;
+}
+
+/* ── Modal edit mode badge ───────────────────────────────── */
+.modal__title-badge {
+    display: inline-block;
+    font-size: 0.55rem;
+    padding: 2px 6px;
+    border-radius: var(--radius-sm);
+    background: var(--accent-violet-dim);
+    color: var(--accent-violet);
+    border: 1px solid var(--accent-violet);
+    margin-left: var(--space-sm);
+    letter-spacing: 0.1em;
+    vertical-align: middle;
+}
+
+/* ── Habit item — deleted indicator (for debugging) ─────── */
+.habit-item--inactive .habit-item__name {
+    color: var(--text-muted);
+}
+
+/* ── Smart progress — no-data day in chart tooltip ──────── */
+/* Chart.js handles null points natively when spanGaps: false */
