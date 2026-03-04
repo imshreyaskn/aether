@@ -12,15 +12,15 @@ import java.util.Optional;
 public interface HabitRepository extends JpaRepository<Habit, Long> {
 
     // Active = not soft-deleted
-    List<Habit> findByActiveTrueAndDeletedAtIsNullOrderByCreatedAtDesc();
+    List<Habit> findByUserIdAndActiveTrueAndDeletedAtIsNullOrderByCreatedAtDesc(String userId);
 
-    List<Habit> findByDeletedAtIsNullOrderByCreatedAtDesc();
+    List<Habit> findByUserIdAndDeletedAtIsNullOrderByCreatedAtDesc(String userId);
 
     // Includes soft-deleted — needed for historical progress calculation
-    List<Habit> findAllByOrderByCreatedAtAsc();
+    List<Habit> findByUserIdOrderByCreatedAtAsc(String userId);
 
     // Legacy compatibility
-    List<Habit> findByActiveTrue();
+    List<Habit> findByUserIdAndActiveTrue(String userId);
 
-    Optional<Habit> findById(Long id);
+    Optional<Habit> findByIdAndUserId(Long id, String userId);
 }

@@ -4,6 +4,7 @@ import com.example.aether.dto.JournalRequest;
 import com.example.aether.dto.JournalResponse;
 import com.example.aether.entity.Journal;
 import com.example.aether.repository.JournalRepository;
+import com.example.aether.util.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,12 +21,14 @@ public class JournalService {
     private final JournalRepository journalRepository;
 
     public List<JournalResponse> getAllJournals() {
-        return journalRepository.findAllByOrderByEntryDateDesc()
+        String userId = SecurityUtils.getCurrentUserId();
+        return journalRepository.findByUserIdOrderByEntryDateDesc(userId)
                 .stream().map(this::toResponse).collect(Collectors.toList());
     }
 
     public JournalResponse getJournalByDate(LocalDate date) {
-        Journal journal = journalRepository.findByEntryDate(date)
+        String userId = SecurityUtils.getCurrentUserId();
+        Journal journal = journalRepository.findByUserIdAndEntryDate(userId, date)
                 .orElse(null);
         return journal != null ? toResponse(journal) : null;
     }
@@ -36,11 +39,12 @@ public class JournalService {
 
     @Transactional
     public JournalResponse saveJournal(JournalRequest request) {
+        String userId = SecurityUtils.getCurrentUserId();
         LocalDate entryDate = request.getEntryDate() != null
                 ? LocalDate.parse(request.getEntryDate())
                 : LocalDate.now();
 
-        Optional<Journal> existing = journalRepository.findByEntryDate(entryDate);
+        Optional<Journal> existing = journalRepository.findByUserIdAndEntryDate(userId, entryDate);
 
         Journal journal;
         if (existing.isPresent()) {
@@ -52,6 +56,7 @@ public class JournalService {
         } else {
             // Create new entry
             journal = Journal.builder()
+                    .userId(userId)
                     .entryDate(entryDate)
                     .title(request.getTitle())
                     .content(request.getContent())
@@ -65,7 +70,13 @@ public class JournalService {
 
     @Transactional
     public void deleteJournal(Long id) {
-        journalRepository.deleteById(id);
+        // Here we could also check if this journal belongs to the user
+        String userId = SecurityUtils.getCurrentUserId();
+        journalRepository.findById(id).ifPresent(journal -> {
+            if (userId.equals(journal.getUserId())) {
+                journalRepository.delete(journal);
+            }
+        });
     }
 
     private JournalResponse toResponse(Journal journal) {

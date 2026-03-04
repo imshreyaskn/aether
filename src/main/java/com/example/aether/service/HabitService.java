@@ -6,6 +6,7 @@ import com.example.aether.entity.Habit;
 import com.example.aether.entity.HabitLog;
 import com.example.aether.repository.HabitLogRepository;
 import com.example.aether.repository.HabitRepository;
+import com.example.aether.util.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,21 +25,25 @@ public class HabitService {
 
     /** All habits that are NOT soft-deleted — for the daily checklist. */
     public List<HabitResponse> getAllHabits() {
+        String userId = SecurityUtils.getCurrentUserId();
         LocalDate today = LocalDate.now();
-        return habitRepository.findByDeletedAtIsNullOrderByCreatedAtDesc()
+        return habitRepository.findByUserIdAndDeletedAtIsNullOrderByCreatedAtDesc(userId)
                 .stream().map(h -> toResponse(h, today)).collect(Collectors.toList());
     }
 
     /** Only active (active=true AND not soft-deleted) habits. */
     public List<HabitResponse> getActiveHabits() {
+        String userId = SecurityUtils.getCurrentUserId();
         LocalDate today = LocalDate.now();
-        return habitRepository.findByActiveTrueAndDeletedAtIsNullOrderByCreatedAtDesc()
+        return habitRepository.findByUserIdAndActiveTrueAndDeletedAtIsNullOrderByCreatedAtDesc(userId)
                 .stream().map(h -> toResponse(h, today)).collect(Collectors.toList());
     }
 
     @Transactional
     public HabitResponse createHabit(HabitRequest request) {
+        String userId = SecurityUtils.getCurrentUserId();
         Habit habit = Habit.builder()
+                .userId(userId)
                 .name(request.getName())
                 .description(request.getDescription())
                 .color(request.getColor() != null ? request.getColor() : "#8B5CF6")
@@ -66,6 +71,7 @@ public class HabitService {
 
     @Transactional
     public HabitResponse toggleHabitLog(Long habitId) {
+        String userId = SecurityUtils.getCurrentUserId();
         LocalDate today = LocalDate.now();
         Habit habit = getActiveHabitById(habitId);
         var existingLog = habitLogRepository.findByHabitIdAndLogDate(habitId, today);
@@ -73,6 +79,7 @@ public class HabitService {
             habitLogRepository.delete(existingLog.get());
         } else {
             HabitLog log = HabitLog.builder()
+                    .userId(userId)
                     .habit(habit)
                     .logDate(today)
                     .completed(true)
@@ -84,12 +91,10 @@ public class HabitService {
 
     /**
      * Soft delete — marks deletedAt timestamp, log history is preserved.
-     * Hard delete is intentionally removed.
      */
     @Transactional
     public void deleteHabit(Long habitId) {
-        Habit habit = habitRepository.findById(habitId)
-                .orElseThrow(() -> new RuntimeException("Habit not found: " + habitId));
+        Habit habit = getActiveHabitById(habitId);
         habit.setDeletedAt(LocalDateTime.now());
         habitRepository.save(habit);
     }
@@ -105,8 +110,9 @@ public class HabitService {
     // ── Helpers ──────────────────────────────────────────────
 
     private Habit getActiveHabitById(Long id) {
-        return habitRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Habit not found: " + id));
+        String userId = SecurityUtils.getCurrentUserId();
+        return habitRepository.findByIdAndUserId(id, userId)
+                .orElseThrow(() -> new RuntimeException("Habit not found or unauthorized: " + id));
     }
 
     private HabitResponse toResponse(Habit habit, LocalDate date) {

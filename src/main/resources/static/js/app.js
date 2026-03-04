@@ -304,6 +304,7 @@ async function saveHabit() {
         if (res.ok) {
             closeModal();
             await loadHabits();
+            await loadProgressStats();
             await loadMiniChart();
             showToast(state.editingId ? '◆ HABIT UPDATED' : '◆ HABIT CREATED');
         }

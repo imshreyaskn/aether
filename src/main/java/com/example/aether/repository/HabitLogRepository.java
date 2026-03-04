@@ -21,8 +21,9 @@ public interface HabitLogRepository extends JpaRepository<HabitLog, Long> {
          * Fetch all logs in a date range — includes logs for soft-deleted habits
          * (important for historical accuracy in insights).
          */
-        @Query("SELECT hl FROM HabitLog hl WHERE hl.logDate BETWEEN :startDate AND :endDate")
-        List<HabitLog> findLogsBetweenDates(
+        @Query("SELECT hl FROM HabitLog hl WHERE hl.userId = :userId AND hl.logDate BETWEEN :startDate AND :endDate")
+        List<HabitLog> findLogsBetweenDatesByUserId(
+                        @Param("userId") String userId,
                         @Param("startDate") LocalDate startDate,
                         @Param("endDate") LocalDate endDate);
 

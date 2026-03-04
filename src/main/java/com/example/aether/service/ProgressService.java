@@ -37,8 +37,10 @@ public class ProgressService {
         LocalDate today = LocalDate.now();
         LocalDate startDate = today.minusDays(days - 1);
 
+        String userId = com.example.aether.util.SecurityUtils.getCurrentUserId();
+
         // Fetch ALL habits (incl. soft-deleted) for historical accuracy
-        List<Habit> allHabits = habitRepository.findAllByOrderByCreatedAtAsc();
+        List<Habit> allHabits = habitRepository.findByUserIdOrderByCreatedAtAsc(userId);
 
         // Current active count (for the summary header)
         long currentActive = allHabits.stream()
@@ -50,7 +52,7 @@ public class ProgressService {
         }
 
         // Fetch all logs in the range (includes logs for deleted habits)
-        List<HabitLog> allLogs = habitLogRepository.findLogsBetweenDates(startDate, today);
+        List<HabitLog> allLogs = habitLogRepository.findLogsBetweenDatesByUserId(userId, startDate, today);
         Map<LocalDate, List<HabitLog>> logsByDate = allLogs.stream()
                 .collect(Collectors.groupingBy(HabitLog::getLogDate));
 

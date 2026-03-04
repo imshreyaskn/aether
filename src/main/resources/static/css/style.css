@@ -1100,28 +1100,58 @@ body {
 
 @media (max-width: 768px) {
     .nav {
-        flex-direction: column;
-        gap: var(--space-sm);
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto auto;
+        height: auto;
         padding: var(--space-sm) var(--space-md);
+        gap: var(--space-sm);
+        border-bottom: 1px solid var(--border-subtle);
     }
 
-    .nav__links {
+    .nav__center {
+        grid-column: 1 / -1;
         order: 3;
+        margin-top: 2px;
+    }
+
+    .nav__tabs {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .nav__tab {
+        flex: 1;
+        justify-content: center;
     }
 
     .page {
-        padding: calc(120px + var(--space-md)) var(--space-md) var(--space-2xl);
+        padding: calc(100px + var(--space-md)) var(--space-sm) var(--space-2xl);
     }
 
     .stats-bar {
         grid-template-columns: 1fr;
+        gap: var(--space-sm);
     }
 
     .insights-stats {
         grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-sm);
     }
 
     .stat-card__value {
         font-size: 1.5rem;
+    }
+
+    .habit-item {
+        padding: var(--space-md);
+        gap: var(--space-sm);
+    }
+
+    .journal__editor {
+        gap: var(--space-sm);
+    }
+
+    .modal {
+        margin: 0 var(--space-md);
     }
 }
